@@ -5,9 +5,159 @@
 
 ## Project Structure & Module Organization
 
-- Source code: `src/` (CLI wiring in `src/cli`, commands in `src/commands`, web provider in `src/provider-web.ts`, infra in `src/infra`, media pipeline in `src/media`).
-- Tests: colocated `*.test.ts`.
-- Docs: `docs/` (images, queue, Pi config). Built output lives in `dist/`.
+### Top-Level Directories
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/` | Core application source code (TypeScript) |
+| `apps/` | Platform-specific applications (Android, iOS, macOS, shared) |
+| `extensions/` | Plugin/extension ecosystem (29 channel and provider plugins) |
+| `docs/` | Mintlify documentation site |
+| `packages/` | Workspace packages |
+| `scripts/` | Build, deployment, and utility scripts |
+| `test/` | Root-level test fixtures, helpers, and E2E tests |
+| `.github/` | GitHub Actions workflows, issue templates, labeler config |
+| `patches/` | pnpm patches for dependency fixes |
+| `assets/` | Media assets and images |
+| `dist/` | Built output (git-ignored) |
+
+### Source Code Organization (`src/`)
+
+**Core Channel Integrations:**
+- `telegram/` - Telegram bot integration
+- `discord/` - Discord bot integration
+- `slack/` - Slack bot integration
+- `signal/` - Signal messenger integration
+- `imessage/` - iMessage integration (macOS/iOS)
+- `web/` - WhatsApp Web (Baileys) integration
+- `line/` - LINE messaging integration
+
+**Gateway & Communication:**
+- `gateway/` - Central server/message broker
+  - `server.ts`, `client.ts` - WebSocket protocol implementation
+  - `server-methods/` - RPC method handlers
+  - `server-chat.ts` - Chat message routing
+  - `server-channels.ts` - Channel management
+  - `server-plugins.ts` - Plugin lifecycle
+  - `protocol/` - Protocol definitions
+
+**CLI Infrastructure:**
+- `cli/` - Command-line interface
+  - `program/` - Command routing
+  - `gateway-cli/` - Gateway commands
+  - `node-cli/` - Node operations
+  - `browser-cli/` - Browser/web UI
+  - `cron-cli/` - Cron job management
+  - `daemon-cli/` - Daemon operations
+  - `deps.js` - Dependency injection
+  - `progress.ts` - Progress bars/spinners (use this, don't hand-roll)
+
+**Commands:**
+- `commands/` - High-level command implementations
+  - `agent/` - Agent operations
+  - `channels/` - Channel configuration
+  - `gateway-status/` - Status reporting
+  - `models/` - Model management
+  - `onboarding/` - Setup wizard
+
+**Agent Runtime:**
+- `agents/` - Pi agent integration and RPC
+  - `auth-profiles/` - Authentication profile management
+  - `tools/` - Tool definitions and execution
+  - Agent sandboxing, skills installation, model scanning
+
+**Infrastructure & Utilities:**
+- `infra/` - Low-level infrastructure
+  - Port management, binaries, Bonjour/mDNS discovery
+  - Tailscale integration, SSH tunneling
+  - Device auth, exec approvals, provider usage tracking
+  - State migrations, updates, restarts
+
+**Channels & Routing:**
+- `channels/` - Shared channel logic
+  - `allowlists/` - Access control
+  - `plugins/` - Plugin channel support
+  - `web/` - Web channel components
+- `routing/` - Message routing logic
+
+**Media & Understanding:**
+- `media/` - Media processing (photos, videos, documents)
+- `media-understanding/` - Image/video analysis
+- `link-understanding/` - Web content parsing
+- `markdown/` - Markdown processing utilities
+- `browser/` - Browser automation (Playwright)
+
+**Data & Storage:**
+- `sessions/` - Session state management
+- `config/` - Configuration loading/parsing
+- `providers/` - LLM/AI provider integrations
+- `memory/` - Agent memory management
+- `security/` - Auth tokens, encryption
+
+**Automation & Scheduling:**
+- `cron/` - Job scheduling (Croner integration)
+- `auto-reply/` - Automatic reply engine
+- `hooks/` - Webhook & event hooks
+
+**UI & Terminal:**
+- `tui/` - Terminal UI (Pi TUI integration)
+- `wizard/` - Onboarding wizard
+- `terminal/` - Terminal utilities, styling, tables
+  - `palette.ts` - Shared CLI color palette (use this, no hardcoded colors)
+  - `table.ts` - ANSI-safe table wrapping
+
+**Plugin System:**
+- `plugin-sdk/` - Plugin developer SDK (exported as `openclaw/plugin-sdk`)
+- `plugins/` - Core plugin loading
+
+**Other Core Modules:**
+- `acp/` - Agent Client Protocol
+- `canvas-host/` - A2UI canvas rendering
+- `control-ui/` - Control panel UI
+- `daemon/` - Daemon mode
+- `macos/` - macOS-specific code
+- `node-host/` - Node.js host runtime
+- `pairing/` - Device pairing
+- `process/` - Child process management, RPC
+- `whatsapp/` - WhatsApp-specific utilities
+- `logging/` - Structured logging
+- `shared/` - Shared utilities
+- `compat/` - Compatibility utilities
+- `tts/` - Text-to-speech
+
+### Apps Directory
+
+| App | Platform | Purpose |
+|-----|----------|---------|
+| `macos/` | Swift/SwiftUI | Desktop app with menubar gateway |
+| `ios/` | Swift/UIKit | iPhone/iPad client |
+| `android/` | Kotlin/Gradle | Android client |
+| `shared/` | TypeScript | Shared mobile code (OpenClawKit) |
+
+### Extensions (29 plugins)
+
+**Messaging Channel Extensions:**
+- `discord/`, `slack/`, `telegram/`, `signal/` - Core messaging platforms
+- `matrix/`, `mattermost/`, `msteams/`, `googlechat/` - Team chat platforms
+- `nextcloud-talk/`, `tlon/`, `nostr/`, `twitch/` - Additional platforms
+- `zalo/`, `zalouser/`, `bluebubbles/` - Regional/specialized
+- `whatsapp/`, `line/`, `imessage/` - Mobile messaging
+- `voice-call/` - Voice/WebRTC
+
+**Provider/Auth Extensions:**
+- `google-gemini-cli-auth/`, `google-antigravity-auth/` - Google auth
+- `minimax-portal-auth/` - Minimax auth
+- `copilot-proxy/` - GitHub Copilot proxy
+- `open-prose/` - Open Prose provider
+
+**Infrastructure Extensions:**
+- `memory-core/`, `memory-lancedb/` - Vector DB/memory
+- `diagnostics-otel/` - OpenTelemetry diagnostics
+- `llm-task/`, `lobster/` - Agent task runners
+
+### General Structure Notes
+
+- Tests: colocated `*.test.ts` next to source files
 - Plugins/extensions: live under `extensions/*` (workspace packages). Keep plugin-only deps in the extension `package.json`; do not add them to the root `package.json` unless core uses them.
 - Plugins: install runs `npm install --omit=dev` in plugin dir; runtime deps must live in `dependencies`. Avoid `workspace:*` in `dependencies` (npm install breaks); put `openclaw` in `devDependencies` or `peerDependencies` instead (runtime resolves `openclaw/plugin-sdk` via jiti alias).
 - Installers served from `https://openclaw.ai/*`: live in the sibling repo `../openclaw.ai` (`public/install.sh`, `public/install-cli.sh`, `public/install.ps1`).
@@ -16,6 +166,20 @@
   - Core channel code: `src/telegram`, `src/discord`, `src/slack`, `src/signal`, `src/imessage`, `src/web` (WhatsApp web), `src/channels`, `src/routing`
   - Extensions (channel plugins): `extensions/*` (e.g. `extensions/msteams`, `extensions/matrix`, `extensions/zalo`, `extensions/zalouser`, `extensions/voice-call`)
 - When adding channels/extensions/apps/docs, review `.github/labeler.yml` for label coverage.
+
+## Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `package.json` | CLI version, npm scripts, dependencies |
+| `tsconfig.json` | TypeScript ES2023, strict mode, `src/` to `dist/` |
+| `vitest.config.ts` | Unit tests (4-16 workers), 70% coverage threshold |
+| `vitest.e2e.config.ts` | E2E tests (2-4 workers) |
+| `vitest.live.config.ts` | Live provider tests with real credentials |
+| `.oxlintrc.json` | Oxlint config (unicorn, TypeScript, oxc rules) |
+| `.oxfmtrc.jsonc` | Oxfmt code formatter config |
+| `pnpm-workspace.yaml` | Workspace: root, `ui/`, `packages/*`, `extensions/*` |
+| `.pre-commit-config.yaml` | Pre-commit hooks for linting |
 
 ## Docs Linking (Mintlify)
 
@@ -26,7 +190,25 @@
 - When Peter asks for links, reply with full `https://docs.openclaw.ai/...` URLs (not root-relative).
 - When you touch docs, end the reply with the `https://docs.openclaw.ai/...` URLs you referenced.
 - README (GitHub): keep absolute docs URLs (`https://docs.openclaw.ai/...`) so links work on GitHub.
-- Docs content must be generic: no personal device names/hostnames/paths; use placeholders like `user@gateway-host` and “gateway host”.
+- Docs content must be generic: no personal device names/hostnames/paths; use placeholders like `user@gateway-host` and "gateway host".
+
+### Documentation Structure (`docs/`)
+
+| Directory | Purpose |
+|-----------|---------|
+| `channels/` | Integration docs for each messaging platform |
+| `cli/` | CLI command reference |
+| `install/` | Installation guides |
+| `gateway/` | Gateway server docs |
+| `plugins/` | Plugin development guide |
+| `providers/` | AI/LLM provider setup |
+| `hooks/` | Webhook and event documentation |
+| `concepts/` | Architecture and terminology |
+| `start/` | Getting started guides |
+| `platforms/` | macOS, iOS, Android app docs |
+| `reference/` | Release, deployment info |
+| `security/` | Security guidelines |
+| `diagnostics/` | Troubleshooting, debug mode |
 
 ## exe.dev VM ops (general)
 
@@ -53,14 +235,39 @@
 - Lint/format: `pnpm lint` (oxlint), `pnpm format` (oxfmt)
 - Tests: `pnpm test` (vitest); coverage: `pnpm test:coverage`
 
+### Key Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `pnpm build` | TypeScript compilation + A2UI bundling |
+| `pnpm dev` | Run CLI in dev mode |
+| `pnpm lint` | Oxlint (type-aware) |
+| `pnpm format` / `pnpm format:fix` | Oxfmt formatting |
+| `pnpm test` | Vitest parallel runner |
+| `pnpm test:coverage` | Tests with coverage report |
+| `pnpm test:e2e` | E2E tests |
+| `pnpm test:live` | Live provider tests |
+| `pnpm gateway:dev` | Dev gateway (skip channels) |
+| `pnpm ios:build` / `pnpm android:assemble` | Mobile builds |
+| `pnpm mac:package` | macOS app packaging |
+| `pnpm docs:dev` | Mintlify docs server |
+| `pnpm protocol:gen` | Generate protocol schemas |
+
 ## Coding Style & Naming Conventions
 
 - Language: TypeScript (ESM). Prefer strict typing; avoid `any`.
 - Formatting/linting via Oxlint and Oxfmt; run `pnpm lint` before commits.
 - Add brief code comments for tricky or non-obvious logic.
-- Keep files concise; extract helpers instead of “V2” copies. Use existing patterns for CLI options and dependency injection via `createDefaultDeps`.
-- Aim to keep files under ~700 LOC; guideline only (not a hard guardrail). Split/refactor when it improves clarity or testability.
+- Keep files concise; extract helpers instead of "V2" copies. Use existing patterns for CLI options and dependency injection via `createDefaultDeps`.
+- Aim to keep files under ~500-700 LOC; guideline only (not a hard guardrail). Split/refactor when it improves clarity or testability.
 - Naming: use **OpenClaw** for product/app/docs headings; use `openclaw` for CLI command, package/binary, paths, and config keys.
+
+### Architecture Patterns
+
+1. **Dependency Injection**: `createDefaultDeps()` provides shared dependencies (config, infra, etc.)
+2. **Protocol-Based Communication**: Gateway uses WebSocket with typed protocol (generated from schemas)
+3. **Channel Abstraction**: Unified routing layer supports both core and extension channels
+4. **Plugin SDK**: Extensible model; plugins are loaded at runtime with sandboxed environment
 
 ## Release Channels (Naming)
 
@@ -75,9 +282,18 @@
 - Run `pnpm test` (or `pnpm test:coverage`) before pushing when you touch logic.
 - Do not set test workers above 16; tried already.
 - Live tests (real keys): `CLAWDBOT_LIVE_TEST=1 pnpm test:live` (OpenClaw-only) or `LIVE=1 pnpm test:live` (includes provider live tests). Docker: `pnpm test:docker:live-models`, `pnpm test:docker:live-gateway`. Onboarding Docker E2E: `pnpm test:docker:onboard`.
-- Full kit + what’s covered: `docs/testing.md`.
+- Full kit + what's covered: `docs/testing.md`.
 - Pure test additions/fixes generally do **not** need a changelog entry unless they alter user-facing behavior or the user asks for one.
 - Mobile: before using a simulator, check for connected real devices (iOS + Android) and prefer them when available.
+
+### Test Organization
+
+- **Colocated tests**: `*.test.ts` next to source files
+- **E2E tests**: `*.e2e.test.ts` run separately with Docker
+- **Live tests**: `*.live.test.ts` require real API credentials
+- **Test root**: `/test/` directory with fixtures, helpers, setup
+- **Setup file**: `test/setup.ts` (global test configuration)
+- **Helpers**: `test/helpers/`, `test/mocks/`, `test/fixtures/`
 
 ## Commit & Pull Request Guidelines
 
@@ -90,12 +306,12 @@
 - PR review calls: prefer a single `gh pr view --json ...` to batch metadata/comments; run `gh pr diff` only when needed.
 - Before starting a review when a GH Issue/PR is pasted: run `git pull`; if there are local changes or unpushed commits, stop and alert the user before reviewing.
 - Goal: merge PRs. Prefer **rebase** when commits are clean; **squash** when history is messy.
-- PR merge flow: create a temp branch from `main`, merge the PR branch into it (prefer squash unless commit history is important; use rebase/merge when it is). Always try to merge the PR unless it’s truly difficult, then use another approach. If we squash, add the PR author as a co-contributor. Apply fixes, add changelog entry (include PR # + thanks), run full gate before the final commit, commit, merge back to `main`, delete the temp branch, and end on `main`.
+- PR merge flow: create a temp branch from `main`, merge the PR branch into it (prefer squash unless commit history is important; use rebase/merge when it is). Always try to merge the PR unless it's truly difficult, then use another approach. If we squash, add the PR author as a co-contributor. Apply fixes, add changelog entry (include PR # + thanks), run full gate before the final commit, commit, merge back to `main`, delete the temp branch, and end on `main`.
 - If you review a PR and later do work on it, land via merge/squash (no direct-main commits) and always add the PR author as a co-contributor.
 - When working on a PR: add a changelog entry with the PR number and thank the contributor.
 - When working on an issue: reference the issue in the changelog entry.
 - When merging a PR: leave a PR comment that explains exactly what we did and include the SHA hashes.
-- When merging a PR from a new contributor: add their avatar to the README “Thanks to all clawtributors” thumbnail list.
+- When merging a PR from a new contributor: add their avatar to the README "Thanks to all clawtributors" thumbnail list.
 - After merging a PR: run `bun scripts/update-clawtributors.ts` if the contributor is missing, then commit the regenerated README.
 
 ## Shorthand Commands
@@ -111,9 +327,29 @@
 
 - Web provider stores creds at `~/.openclaw/credentials/`; rerun `openclaw login` if logged out.
 - Pi sessions live under `~/.openclaw/sessions/` by default; the base directory is not configurable.
+- Agent session logs: `~/.openclaw/agents/<agentId>/sessions/*.jsonl`
 - Environment variables: see `~/.profile`.
 - Never commit or publish real phone numbers, videos, or live configuration values. Use obviously fake placeholders in docs, tests, and examples.
 - Release flow: always read `docs/reference/RELEASING.md` and `docs/platforms/mac/release.md` before any release work; do not ask routine questions once those docs answer them.
+
+### Storage Locations
+
+| Path | Purpose |
+|------|---------|
+| `~/.openclaw/config/` | Configuration files (YAML/JSON) |
+| `~/.openclaw/credentials/` | Auth credentials |
+| `~/.openclaw/sessions/` | Session state |
+| `~/.openclaw/agents/<agentId>/sessions/` | Agent session logs (JSONL) |
+
+## Version Locations
+
+- CLI: `package.json`
+- iOS: `apps/ios/Sources/Info.plist` + `apps/ios/Tests/Info.plist` (CFBundleShortVersionString/CFBundleVersion)
+- macOS: `apps/macos/Sources/OpenClaw/Resources/Info.plist` (CFBundleShortVersionString/CFBundleVersion)
+- Android: `apps/android/app/build.gradle.kts` (versionName/versionCode)
+- Docs: `docs/install/updating.md` (pinned npm version)
+- Release docs: `docs/platforms/mac/release.md` (APP_VERSION/APP_BUILD examples)
+- Peekaboo: Xcode projects/Info.plists (MARKETING_VERSION/CURRENT_PROJECT_VERSION)
 
 ## Troubleshooting
 
@@ -129,17 +365,16 @@
 - Never update the Carbon dependency.
 - Any dependency with `pnpm.patchedDependencies` must use an exact version (no `^`/`~`).
 - Patching dependencies (pnpm patches, overrides, or vendored changes) requires explicit approval; do not do this by default.
-- CLI progress: use `src/cli/progress.ts` (`osc-progress` + `@clack/prompts` spinner); don’t hand-roll spinners/bars.
+- CLI progress: use `src/cli/progress.ts` (`osc-progress` + `@clack/prompts` spinner); don't hand-roll spinners/bars.
 - Status output: keep tables + ANSI-safe wrapping (`src/terminal/table.ts`); `status --all` = read-only/pasteable, `status --deep` = probes.
 - Gateway currently runs only as the menubar app; there is no separate LaunchAgent/helper label installed. Restart via the OpenClaw Mac app or `scripts/restart-mac.sh`; to verify/kill use `launchctl print gui/$UID | grep openclaw` rather than assuming a fixed label. **When debugging on macOS, start/stop the gateway via the app, not ad-hoc tmux sessions; kill any temporary tunnels before handoff.**
 - macOS logs: use `./scripts/clawlog.sh` to query unified logs for the OpenClaw subsystem; it supports follow/tail/category filters and expects passwordless sudo for `/usr/bin/log`.
 - If shared guardrails are available locally, review them; otherwise follow this repo's guidance.
-- SwiftUI state management (iOS/macOS): prefer the `Observation` framework (`@Observable`, `@Bindable`) over `ObservableObject`/`@StateObject`; don’t introduce new `ObservableObject` unless required for compatibility, and migrate existing usages when touching related code.
+- SwiftUI state management (iOS/macOS): prefer the `Observation` framework (`@Observable`, `@Bindable`) over `ObservableObject`/`@StateObject`; don't introduce new `ObservableObject` unless required for compatibility, and migrate existing usages when touching related code.
 - Connection providers: when adding a new connection, update every UI surface and docs (macOS app, web UI, mobile if applicable, onboarding/overview docs) and add matching status + configuration forms so provider lists and settings stay in sync.
-- Version locations: `package.json` (CLI), `apps/android/app/build.gradle.kts` (versionName/versionCode), `apps/ios/Sources/Info.plist` + `apps/ios/Tests/Info.plist` (CFBundleShortVersionString/CFBundleVersion), `apps/macos/Sources/OpenClaw/Resources/Info.plist` (CFBundleShortVersionString/CFBundleVersion), `docs/install/updating.md` (pinned npm version), `docs/platforms/mac/release.md` (APP_VERSION/APP_BUILD examples), Peekaboo Xcode projects/Info.plists (MARKETING_VERSION/CURRENT_PROJECT_VERSION).
-- **Restart apps:** “restart iOS/Android apps” means rebuild (recompile/install) and relaunch, not just kill/launch.
+- **Restart apps:** "restart iOS/Android apps" means rebuild (recompile/install) and relaunch, not just kill/launch.
 - **Device checks:** before testing, verify connected real devices (iOS/Android) before reaching for simulators/emulators.
-- iOS Team ID lookup: `security find-identity -p codesigning -v` → use Apple Development (…) TEAMID. Fallback: `defaults read com.apple.dt.Xcode IDEProvisioningTeamIdentifiers`.
+- iOS Team ID lookup: `security find-identity -p codesigning -v` -> use Apple Development (...) TEAMID. Fallback: `defaults read com.apple.dt.Xcode IDEProvisioningTeamIdentifiers`.
 - A2UI bundle hash: `src/canvas-host/a2ui/.bundle.hash` is auto-generated; ignore unexpected changes, and only regenerate via `pnpm canvas:a2ui:bundle` (or `scripts/bundle-a2ui.sh`) when needed. Commit the hash as a separate commit.
 - Release signing/notary keys are managed outside the repo; follow internal release docs.
 - Notary auth env vars (`APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_API_KEY_P8`) are expected in your environment (per internal release docs).
@@ -154,19 +389,19 @@
   - If commit/push already requested, auto-stage and include formatting-only follow-ups in the same commit (or a tiny follow-up commit if needed), no extra confirmation.
   - Only ask when changes are semantic (logic/data/behavior).
 - Lobster seam: use the shared CLI palette in `src/terminal/palette.ts` (no hardcoded colors); apply palette to onboarding/config prompts and other TTY UI output as needed.
-- **Multi-agent safety:** focus reports on your edits; avoid guard-rail disclaimers unless truly blocked; when multiple agents touch the same file, continue if safe; end with a brief “other files present” note only if relevant.
+- **Multi-agent safety:** focus reports on your edits; avoid guard-rail disclaimers unless truly blocked; when multiple agents touch the same file, continue if safe; end with a brief "other files present" note only if relevant.
 - Bug investigations: read source code of relevant npm dependencies and all related local code before concluding; aim for high-confidence root cause.
 - Code style: add brief comments for tricky logic; keep files under ~500 LOC when feasible (split/refactor as needed).
 - Tool schema guardrails (google-antigravity): avoid `Type.Union` in tool input schemas; no `anyOf`/`oneOf`/`allOf`. Use `stringEnum`/`optionalStringEnum` (Type.Unsafe enum) for string lists, and `Type.Optional(...)` instead of `... | null`. Keep top-level tool schema as `type: "object"` with `properties`.
 - Tool schema guardrails: avoid raw `format` property names in tool schemas; some validators treat `format` as a reserved keyword and reject the schema.
-- When asked to open a “session” file, open the Pi session logs under `~/.openclaw/agents/<agentId>/sessions/*.jsonl` (use the `agent=<id>` value in the Runtime line of the system prompt; newest unless a specific ID is given), not the default `sessions.json`. If logs are needed from another machine, SSH via Tailscale and read the same path there.
+- When asked to open a "session" file, open the Pi session logs under `~/.openclaw/agents/<agentId>/sessions/*.jsonl` (use the `agent=<id>` value in the Runtime line of the system prompt; newest unless a specific ID is given), not the default `sessions.json`. If logs are needed from another machine, SSH via Tailscale and read the same path there.
 - Do not rebuild the macOS app over SSH; rebuilds must be run directly on the Mac.
 - Never send streaming/partial replies to external messaging surfaces (WhatsApp, Telegram); only final replies should be delivered there. Streaming/tool events may still go to internal UIs/control channel.
 - Voice wake forwarding tips:
-  - Command template should stay `openclaw-mac agent --message "${text}" --thinking low`; `VoiceWakeForwarder` already shell-escapes `${text}`. Don’t add extra quotes.
-  - launchd PATH is minimal; ensure the app’s launch agent PATH includes standard system paths plus your pnpm bin (typically `$HOME/Library/pnpm`) so `pnpm`/`openclaw` binaries resolve when invoked via `openclaw-mac`.
-- For manual `openclaw message send` messages that include `!`, use the heredoc pattern noted below to avoid the Bash tool’s escaping.
-- Release guardrails: do not change version numbers without operator’s explicit consent; always ask permission before running any npm publish/release step.
+  - Command template should stay `openclaw-mac agent --message "${text}" --thinking low`; `VoiceWakeForwarder` already shell-escapes `${text}`. Don't add extra quotes.
+  - launchd PATH is minimal; ensure the app's launch agent PATH includes standard system paths plus your pnpm bin (typically `$HOME/Library/pnpm`) so `pnpm`/`openclaw` binaries resolve when invoked via `openclaw-mac`.
+- For manual `openclaw message send` messages that include `!`, use the heredoc pattern noted below to avoid the Bash tool's escaping.
+- Release guardrails: do not change version numbers without operator's explicit consent; always ask permission before running any npm publish/release step.
 
 ## NPM + 1Password (publish/verify)
 
