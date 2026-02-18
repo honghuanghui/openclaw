@@ -1,0 +1,38 @@
+{
+  "id": "content-crew",
+  "name": "Content Crew",
+  "description": "Multi-agent collaborative content creation system with specialized roles: Planner, Writer, Editor, Reviewer, and Polisher.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "defaultModel": {
+        "type": "string",
+        "description": "Default model for all agent roles"
+      },
+      "roles": {
+        "type": "object",
+        "description": "Per-role model overrides",
+        "properties": {
+          "planner": { "type": "string" },
+          "writer": { "type": "string" },
+          "editor": { "type": "string" },
+          "reviewer": { "type": "string" },
+          "polisher": { "type": "string" }
+        }
+      },
+      "maxConcurrentAgents": {
+        "type": "number",
+        "description": "Maximum concurrent sub-agents (default: 3)"
+      },
+      "timeoutSeconds": {
+        "type": "number",
+        "description": "Per-agent timeout in seconds (default: 300)"
+      },
+      "outputDir": {
+        "type": "string",
+        "description": "Output directory for generated content"
+      }
+    }
+  }
+}
