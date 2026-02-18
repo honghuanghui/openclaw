@@ -1,5 +1,6 @@
 /**
  * Web API Server for Content Crew Management
+ * Supports both scheduled tasks and continuous worker system
  */
 
 import type { Server } from "node:http";
@@ -9,6 +10,7 @@ import path from "node:path";
 
 import * as queue from "../queue/content-queue.js";
 import * as scheduler from "../scheduler/scheduler.js";
+import * as workerSystem from "../scheduler/worker-system.js";
 import type { ContentStatus } from "../queue/types.js";
 import type { ScheduleFrequency, DayOfWeek } from "../scheduler/types.js";
 
@@ -44,6 +46,7 @@ export function startServer(config: ServerConfig): Server {
   // Initialize storage
   queue.initQueue(config.dataDir);
   scheduler.initScheduler(config.dataDir);
+  workerSystem.initWorkerSystem(config.dataDir);
 
   // ===== Health & Status =====
 
@@ -276,7 +279,7 @@ export function startServer(config: ServerConfig): Server {
     res.json(execution);
   });
 
-  // ===== Scheduler Control =====
+  // ===== Scheduler Control (Legacy) =====
 
   app.post("/api/scheduler/start", (_req: Request, res: Response) => {
     scheduler.startScheduler();
@@ -286,6 +289,78 @@ export function startServer(config: ServerConfig): Server {
   app.post("/api/scheduler/stop", (_req: Request, res: Response) => {
     scheduler.stopScheduler();
     res.json({ status: "stopped" });
+  });
+
+  // ===== Worker System API (24/7 Continuous) =====
+
+  app.get("/api/workers/status", (_req: Request, res: Response) => {
+    const status = workerSystem.getSystemStatus();
+    res.json(status);
+  });
+
+  app.post("/api/workers/start", (_req: Request, res: Response) => {
+    workerSystem.startSystem();
+    res.json({ status: "started", message: "Worker system is now running 24/7" });
+  });
+
+  app.post("/api/workers/stop", (_req: Request, res: Response) => {
+    workerSystem.stopSystem();
+    res.json({ status: "stopped" });
+  });
+
+  app.post("/api/workers/pause", (_req: Request, res: Response) => {
+    workerSystem.pauseSystem();
+    res.json({ status: "paused", message: "Will finish current tasks and pause" });
+  });
+
+  app.get("/api/workers/queue", (_req: Request, res: Response) => {
+    const topics = workerSystem.getQueue();
+    res.json(topics);
+  });
+
+  app.post("/api/workers/queue", (req: Request, res: Response) => {
+    const topic = workerSystem.addTopic({
+      topic: req.body.topic,
+      contentType: req.body.contentType,
+      platforms: req.body.platforms,
+      audience: req.body.audience,
+      tone: req.body.tone,
+      wordCount: req.body.wordCount,
+      language: req.body.language,
+      priority: req.body.priority,
+      source: "manual",
+    });
+    res.status(201).json(topic);
+  });
+
+  app.post("/api/workers/queue/bulk", (req: Request, res: Response) => {
+    const topics = req.body.topics as string[];
+    const items = workerSystem.addTopics(topics);
+    res.status(201).json({ added: items.length, items });
+  });
+
+  app.delete("/api/workers/queue/:id", (req: Request, res: Response) => {
+    const removed = workerSystem.removeTopic(req.params.id);
+    if (!removed) {
+      res.status(404).json({ error: "Topic not found" });
+      return;
+    }
+    res.json({ success: true });
+  });
+
+  app.delete("/api/workers/queue", (_req: Request, res: Response) => {
+    workerSystem.clearQueue();
+    res.json({ success: true, message: "Queue cleared" });
+  });
+
+  app.put("/api/workers/config", (req: Request, res: Response) => {
+    workerSystem.updateConfig(req.body);
+    res.json({ success: true, config: workerSystem.getSystemStatus().config });
+  });
+
+  app.post("/api/workers/reset-stats", (_req: Request, res: Response) => {
+    workerSystem.resetStats();
+    res.json({ success: true });
   });
 
   // ===== Static Files (Web UI) =====

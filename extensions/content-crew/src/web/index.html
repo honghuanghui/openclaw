@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Crew - 自媒体内容管理系统</title>
+  <title>Content Crew - 24/7 自媒体内容自动化系统</title>
   <style>
     :root {
       --primary: #6366f1;
@@ -21,11 +21,7 @@
       --gray-900: #111827;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -34,11 +30,7 @@
       min-height: 100vh;
     }
 
-    /* Layout */
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
+    .app { display: flex; min-height: 100vh; }
 
     .sidebar {
       width: 240px;
@@ -56,16 +48,8 @@
       margin-bottom: 20px;
     }
 
-    .sidebar-header h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .sidebar-header p {
-      font-size: 0.75rem;
-      color: var(--gray-300);
-      margin-top: 4px;
-    }
+    .sidebar-header h1 { font-size: 1.25rem; font-weight: 600; }
+    .sidebar-header p { font-size: 0.75rem; color: var(--gray-300); margin-top: 4px; }
 
     .nav-item {
       display: flex;
@@ -82,23 +66,11 @@
       color: white;
     }
 
-    .nav-item.active {
-      border-left: 3px solid var(--primary);
-    }
+    .nav-item.active { border-left: 3px solid var(--primary); }
+    .nav-item svg { width: 20px; height: 20px; margin-right: 12px; }
 
-    .nav-item svg {
-      width: 20px;
-      height: 20px;
-      margin-right: 12px;
-    }
+    .main { flex: 1; margin-left: 240px; padding: 24px; }
 
-    .main {
-      flex: 1;
-      margin-left: 240px;
-      padding: 24px;
-    }
-
-    /* Header */
     .page-header {
       display: flex;
       justify-content: space-between;
@@ -106,12 +78,8 @@
       margin-bottom: 24px;
     }
 
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
+    .page-title { font-size: 1.5rem; font-weight: 600; }
 
-    /* Cards */
     .card {
       background: white;
       border-radius: 8px;
@@ -127,43 +95,28 @@
       margin-bottom: 16px;
     }
 
-    .card-title {
-      font-size: 1rem;
-      font-weight: 600;
-    }
+    .card-title { font-size: 1rem; font-weight: 600; }
 
-    /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
       margin-bottom: 24px;
     }
 
     .stat-card {
       background: white;
       border-radius: 8px;
-      padding: 20px;
+      padding: 16px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    .stat-label {
-      font-size: 0.875rem;
-      color: var(--gray-600);
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--gray-900);
-    }
-
+    .stat-label { font-size: 0.75rem; color: var(--gray-600); margin-bottom: 4px; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--gray-900); }
     .stat-value.success { color: var(--success); }
     .stat-value.warning { color: var(--warning); }
     .stat-value.danger { color: var(--danger); }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -174,66 +127,23 @@
       cursor: pointer;
       border: none;
       transition: all 0.2s;
+      gap: 6px;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--gray-300); color: var(--gray-700); }
+    .btn-outline:hover { background: var(--gray-100); }
+    .btn-lg { padding: 12px 24px; font-size: 1rem; }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--gray-200); }
+    th { font-weight: 600; color: var(--gray-600); font-size: 0.75rem; text-transform: uppercase; }
+    tr:hover { background: var(--gray-50); }
 
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--gray-300);
-      color: var(--gray-700);
-    }
-
-    .btn-outline:hover {
-      background: var(--gray-100);
-    }
-
-    /* Table */
-    .table-container {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 12px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-
-    th {
-      font-weight: 600;
-      color: var(--gray-600);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    tr:hover {
-      background: var(--gray-50);
-    }
-
-    /* Status Badge */
     .badge {
       display: inline-block;
       padding: 4px 8px;
@@ -246,49 +156,29 @@
     .badge-reviewing { background: #fef3c7; color: #92400e; }
     .badge-approved { background: #d1fae5; color: #065f46; }
     .badge-rejected { background: #fee2e2; color: #991b1b; }
-    .badge-scheduled { background: #dbeafe; color: #1e40af; }
-    .badge-published { background: #d1fae5; color: #065f46; }
+    .badge-idle { background: var(--gray-200); color: var(--gray-700); }
+    .badge-working { background: #dbeafe; color: #1e40af; }
+    .badge-paused { background: #fef3c7; color: #92400e; }
 
-    /* Forms */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: var(--gray-700);
-    }
-
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; color: var(--gray-700); }
     .form-input, .form-select, .form-textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--gray-300);
       border-radius: 6px;
       font-size: 0.875rem;
-      transition: border-color 0.2s;
     }
-
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
+    .form-textarea { min-height: 100px; resize: vertical; }
 
-    .form-textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    /* Modal */
     .modal-backdrop {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.5);
       display: flex;
       align-items: center;
@@ -303,7 +193,6 @@
       max-width: 600px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
     }
 
     .modal-header {
@@ -314,109 +203,103 @@
       align-items: center;
     }
 
-    .modal-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
+    .modal-title { font-size: 1.125rem; font-weight: 600; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 16px 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; }
 
-    .modal-body {
-      padding: 20px;
-    }
+    .hidden { display: none !important; }
 
-    .modal-footer {
-      padding: 16px 20px;
-      border-top: 1px solid var(--gray-200);
+    .status-indicator {
       display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      border-bottom: 1px solid var(--gray-200);
-      margin-bottom: 20px;
-    }
-
-    .tab {
-      padding: 12px 20px;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      color: var(--gray-600);
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
       font-weight: 500;
     }
 
-    .tab:hover {
-      color: var(--gray-900);
-    }
+    .status-indicator.running { background: #d1fae5; color: #065f46; }
+    .status-indicator.stopped { background: var(--gray-200); color: var(--gray-700); }
+    .status-indicator.paused { background: #fef3c7; color: #92400e; }
 
-    .tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-    }
-
-    /* Status indicator */
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
+      animation: pulse 2s infinite;
     }
 
-    .status-dot.running { background: var(--success); animation: pulse 2s infinite; }
-    .status-dot.stopped { background: var(--gray-400); }
+    .status-dot.running { background: var(--success); }
+    .status-dot.stopped { background: var(--gray-400); animation: none; }
+    .status-dot.paused { background: var(--warning); }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
     }
 
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--gray-600);
+    .worker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
-    .empty-state svg {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
+    .worker-card {
+      background: var(--gray-50);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--gray-200);
     }
 
-    /* Actions */
-    .actions {
+    .worker-header {
       display: flex;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
     }
+
+    .worker-name { font-weight: 600; }
+    .worker-stats { font-size: 0.75rem; color: var(--gray-600); margin-top: 8px; }
+    .worker-current { font-size: 0.875rem; color: var(--gray-700); margin-top: 8px; padding: 8px; background: white; border-radius: 4px; }
+
+    .topic-list { max-height: 400px; overflow-y: auto; }
+    .topic-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .topic-item:hover { background: var(--gray-50); }
+    .topic-text { flex: 1; }
+    .topic-meta { font-size: 0.75rem; color: var(--gray-600); margin-top: 4px; }
 
     .action-btn {
-      padding: 6px;
+      padding: 6px 10px;
       border: none;
       background: transparent;
       cursor: pointer;
       border-radius: 4px;
       color: var(--gray-600);
+      font-size: 1rem;
+    }
+    .action-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+
+    .control-panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .action-btn:hover {
-      background: var(--gray-100);
-      color: var(--gray-900);
-    }
-
-    /* Content preview */
-    .content-preview {
-      max-height: 100px;
-      overflow: hidden;
-      font-size: 0.875rem;
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
       color: var(--gray-600);
     }
+
+    .uptime { font-size: 0.875rem; color: var(--gray-600); }
   </style>
 </head>
 <body>
@@ -425,38 +308,32 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <h1>Content Crew</h1>
-        <p>自媒体内容管理系统</p>
+        <p>24/7 自媒体自动化系统</p>
       </div>
       <nav>
         <a class="nav-item active" data-page="dashboard">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
           </svg>
-          仪表盘
+          控制台
+        </a>
+        <a class="nav-item" data-page="workers">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+          工作进程
+        </a>
+        <a class="nav-item" data-page="topics">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          主题队列
         </a>
         <a class="nav-item" data-page="content">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          内容队列
-        </a>
-        <a class="nav-item" data-page="tasks">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-          任务管理
-        </a>
-        <a class="nav-item" data-page="schedules">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          定时调度
-        </a>
-        <a class="nav-item" data-page="history">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          执行历史
+          内容管理
         </a>
         <a class="nav-item" data-page="settings">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -473,68 +350,96 @@
       <!-- Dashboard Page -->
       <div id="page-dashboard" class="page">
         <div class="page-header">
-          <h2 class="page-title">仪表盘</h2>
-          <div>
-            <span class="status-dot" id="scheduler-status"></span>
-            <span id="scheduler-status-text">调度器状态</span>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">待审核内容</div>
-            <div class="stat-value" id="stat-pending">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">已通过内容</div>
-            <div class="stat-value success" id="stat-approved">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">待发布内容</div>
-            <div class="stat-value warning" id="stat-scheduled">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">今日已生成</div>
-            <div class="stat-value" id="stat-today">0</div>
+          <h2 class="page-title">控制台</h2>
+          <div class="status-indicator" id="system-status">
+            <span class="status-dot"></span>
+            <span id="status-text">加载中...</span>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">最近内容</h3>
-            <button class="btn btn-primary" onclick="showPage('content')">查看全部</button>
+            <h3 class="card-title">系统控制</h3>
+            <span class="uptime" id="uptime-display"></span>
           </div>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>标题</th>
-                  <th>类型</th>
-                  <th>状态</th>
-                  <th>创建时间</th>
-                </tr>
-              </thead>
-              <tbody id="recent-content">
-              </tbody>
-            </table>
+          <div class="control-panel">
+            <button class="btn btn-success btn-lg" id="btn-start" onclick="startWorkers()">
+              ▶ 启动系统
+            </button>
+            <button class="btn btn-warning btn-lg" id="btn-pause" onclick="pauseWorkers()">
+              ⏸ 暂停系统
+            </button>
+            <button class="btn btn-danger btn-lg" id="btn-stop" onclick="stopWorkers()">
+              ⏹ 停止系统
+            </button>
           </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">运行中的进程</div>
+            <div class="stat-value success" id="stat-workers">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">队列中的主题</div>
+            <div class="stat-value" id="stat-queue">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">已完成内容</div>
+            <div class="stat-value success" id="stat-completed">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">待审核内容</div>
+            <div class="stat-value warning" id="stat-pending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">错误次数</div>
+            <div class="stat-value danger" id="stat-errors">0</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">工作进程状态</h3>
+          </div>
+          <div class="worker-grid" id="worker-list"></div>
+        </div>
+      </div>
+
+      <!-- Workers Page -->
+      <div id="page-workers" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">工作进程</h2>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">所有工作进程</h3>
+          </div>
+          <div class="worker-grid" id="workers-detail"></div>
+        </div>
+      </div>
+
+      <!-- Topics Page -->
+      <div id="page-topics" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">主题队列</h2>
+          <button class="btn btn-primary" onclick="showAddTopicModal()">+ 添加主题</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">待处理主题</h3>
+            <button class="btn btn-outline" onclick="clearQueue()">清空队列</button>
+          </div>
+          <div class="topic-list" id="topic-list"></div>
         </div>
       </div>
 
       <!-- Content Page -->
       <div id="page-content" class="page hidden">
         <div class="page-header">
-          <h2 class="page-title">内容队列</h2>
-          <button class="btn btn-primary" onclick="showNewContentModal()">+ 新建内容</button>
-        </div>
-
-        <div class="tabs">
-          <div class="tab active" data-filter="all">全部</div>
-          <div class="tab" data-filter="draft">草稿</div>
-          <div class="tab" data-filter="reviewing">审核中</div>
-          <div class="tab" data-filter="approved">已通过</div>
-          <div class="tab" data-filter="scheduled">待发布</div>
-          <div class="tab" data-filter="published">已发布</div>
+          <h2 class="page-title">内容管理</h2>
         </div>
 
         <div class="card">
@@ -544,91 +449,12 @@
                 <tr>
                   <th>标题</th>
                   <th>类型</th>
-                  <th>平台</th>
                   <th>状态</th>
                   <th>创建时间</th>
                   <th>操作</th>
                 </tr>
               </thead>
-              <tbody id="content-list">
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tasks Page -->
-      <div id="page-tasks" class="page hidden">
-        <div class="page-header">
-          <h2 class="page-title">任务管理</h2>
-          <button class="btn btn-primary" onclick="showNewTaskModal()">+ 新建任务</button>
-        </div>
-
-        <div class="card">
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>任务名称</th>
-                  <th>内容类型</th>
-                  <th>平台</th>
-                  <th>状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="tasks-list">
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Schedules Page -->
-      <div id="page-schedules" class="page hidden">
-        <div class="page-header">
-          <h2 class="page-title">定时调度</h2>
-          <button class="btn btn-primary" onclick="showNewScheduleModal()">+ 新建调度</button>
-        </div>
-
-        <div class="card">
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>调度名称</th>
-                  <th>关联任务</th>
-                  <th>频率</th>
-                  <th>下次执行</th>
-                  <th>状态</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="schedules-list">
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- History Page -->
-      <div id="page-history" class="page hidden">
-        <div class="page-header">
-          <h2 class="page-title">执行历史</h2>
-        </div>
-
-        <div class="card">
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>任务</th>
-                  <th>状态</th>
-                  <th>开始时间</th>
-                  <th>耗时</th>
-                </tr>
-              </thead>
-              <tbody id="history-list">
-              </tbody>
+              <tbody id="content-list"></tbody>
             </table>
           </div>
         </div>
@@ -641,50 +467,54 @@
         </div>
 
         <div class="card">
-          <h3 class="card-title">调度器控制</h3>
+          <h3 class="card-title">工作进程配置</h3>
           <div style="margin-top: 16px;">
-            <button class="btn btn-success" id="btn-start-scheduler" onclick="startScheduler()">启动调度器</button>
-            <button class="btn btn-danger" id="btn-stop-scheduler" onclick="stopScheduler()">停止调度器</button>
+            <div class="form-group">
+              <label class="form-label">工作进程数量</label>
+              <input type="number" class="form-input" id="config-workers" min="1" max="10" value="2">
+            </div>
+            <div class="form-group">
+              <label class="form-label">最小队列长度（自动补充）</label>
+              <input type="number" class="form-input" id="config-queue-size" min="5" max="100" value="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">任务间隔（毫秒）</label>
+              <input type="number" class="form-input" id="config-delay" min="1000" max="60000" value="5000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">默认语言</label>
+              <select class="form-select" id="config-language">
+                <option value="Chinese">中文</option>
+                <option value="English">英文</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Modal Container -->
+  <!-- Modal -->
   <div id="modal-container" class="modal-backdrop hidden">
     <div class="modal">
       <div class="modal-header">
         <h3 class="modal-title" id="modal-title">标题</h3>
-        <button class="action-btn" onclick="closeModal()">&times;</button>
+        <button class="action-btn" onclick="closeModal()">✕</button>
       </div>
-      <div class="modal-body" id="modal-body">
-      </div>
-      <div class="modal-footer" id="modal-footer">
-      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
     </div>
   </div>
 
   <script>
-    const API_BASE = '/api';
+    const API = '/api';
     let currentPage = 'dashboard';
-    let contentFilter = 'all';
+    let refreshInterval = null;
 
     // Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const page = item.dataset.page;
-        showPage(page);
-      });
-    });
-
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        contentFilter = tab.dataset.filter;
-        loadContent();
-      });
+      item.addEventListener('click', () => showPage(item.dataset.page));
     });
 
     function showPage(page) {
@@ -694,139 +524,157 @@
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
       });
-      refreshPage();
+      refresh();
     }
 
-    function refreshPage() {
-      switch (currentPage) {
-        case 'dashboard': loadDashboard(); break;
-        case 'content': loadContent(); break;
-        case 'tasks': loadTasks(); break;
-        case 'schedules': loadSchedules(); break;
-        case 'history': loadHistory(); break;
-      }
-    }
-
-    // API calls
+    // API
     async function api(method, path, data) {
-      const options = {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-      };
-      if (data) options.body = JSON.stringify(data);
-      const res = await fetch(API_BASE + path, options);
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (data) opts.body = JSON.stringify(data);
+      const res = await fetch(API + path, opts);
       return res.json();
     }
 
-    // Dashboard
-    async function loadDashboard() {
-      const status = await api('GET', '/status');
+    // Refresh data
+    async function refresh() {
+      const status = await api('GET', '/workers/status');
+      updateDashboard(status);
 
-      document.getElementById('stat-pending').textContent =
-        (status.content?.byStatus?.draft || 0) + (status.content?.byStatus?.reviewing || 0);
-      document.getElementById('stat-approved').textContent = status.content?.byStatus?.approved || 0;
-      document.getElementById('stat-scheduled').textContent = status.content?.byStatus?.scheduled || 0;
-      document.getElementById('stat-today').textContent = status.content?.todayCreated || 0;
-
-      const schedulerDot = document.getElementById('scheduler-status');
-      const schedulerText = document.getElementById('scheduler-status-text');
-      if (status.system?.schedulerRunning) {
-        schedulerDot.className = 'status-dot running';
-        schedulerText.textContent = '调度器运行中';
-      } else {
-        schedulerDot.className = 'status-dot stopped';
-        schedulerText.textContent = '调度器已停止';
+      if (currentPage === 'topics') {
+        loadTopics();
+      } else if (currentPage === 'content') {
+        loadContent();
       }
-
-      const content = await api('GET', '/content?pageSize=5');
-      const tbody = document.getElementById('recent-content');
-      tbody.innerHTML = content.items?.map(item => `
-        <tr>
-          <td>${escapeHtml(item.title)}</td>
-          <td>${item.contentType}</td>
-          <td><span class="badge badge-${item.status}">${statusLabel(item.status)}</span></td>
-          <td>${formatDate(item.createdAt)}</td>
-        </tr>
-      `).join('') || '<tr><td colspan="4" class="empty-state">暂无内容</td></tr>';
     }
 
-    // Content
+    function updateDashboard(status) {
+      // System status
+      const statusEl = document.getElementById('system-status');
+      const statusText = document.getElementById('status-text');
+      const dot = statusEl.querySelector('.status-dot');
+
+      if (status.isRunning) {
+        statusEl.className = 'status-indicator running';
+        dot.className = 'status-dot running';
+        statusText.textContent = '系统运行中';
+      } else {
+        statusEl.className = 'status-indicator stopped';
+        dot.className = 'status-dot stopped';
+        statusText.textContent = '系统已停止';
+      }
+
+      // Uptime
+      if (status.uptime > 0) {
+        const h = Math.floor(status.uptime / 3600);
+        const m = Math.floor((status.uptime % 3600) / 60);
+        const s = status.uptime % 60;
+        document.getElementById('uptime-display').textContent = `运行时间: ${h}小时${m}分${s}秒`;
+      } else {
+        document.getElementById('uptime-display').textContent = '';
+      }
+
+      // Stats
+      const workingCount = status.workers.filter(w => w.state === 'working').length;
+      document.getElementById('stat-workers').textContent = `${workingCount}/${status.workers.length}`;
+      document.getElementById('stat-queue').textContent = status.queueSize;
+      document.getElementById('stat-completed').textContent = status.completedCount;
+      document.getElementById('stat-errors').textContent = status.errorCount;
+
+      // Workers
+      const workerHtml = status.workers.map(w => `
+        <div class="worker-card">
+          <div class="worker-header">
+            <span class="worker-name">${w.name}</span>
+            <span class="badge badge-${w.state}">${stateLabel(w.state)}</span>
+          </div>
+          ${w.currentTopic ? `<div class="worker-current">正在处理: ${escapeHtml(w.currentTopic.topic.slice(0, 50))}...</div>` : ''}
+          <div class="worker-stats">完成: ${w.completedTasks} | 错误: ${w.errors}</div>
+        </div>
+      `).join('');
+      document.getElementById('worker-list').innerHTML = workerHtml;
+      document.getElementById('workers-detail').innerHTML = workerHtml;
+
+      // Update config form
+      document.getElementById('config-workers').value = status.config.workerCount;
+      document.getElementById('config-queue-size').value = status.config.minQueueSize;
+      document.getElementById('config-delay').value = status.config.taskDelay;
+      document.getElementById('config-language').value = status.config.defaultLanguage;
+    }
+
+    async function loadTopics() {
+      const topics = await api('GET', '/workers/queue');
+      const html = topics.length ? topics.map(t => `
+        <div class="topic-item">
+          <div class="topic-text">
+            <div>${escapeHtml(t.topic)}</div>
+            <div class="topic-meta">${t.contentType} | ${t.source} | 优先级: ${t.priority}</div>
+          </div>
+          <button class="action-btn" onclick="removeTopic('${t.id}')" title="删除">🗑</button>
+        </div>
+      `).join('') : '<div class="empty-state">队列为空，系统将自动生成主题</div>';
+      document.getElementById('topic-list').innerHTML = html;
+    }
+
     async function loadContent() {
-      const filter = contentFilter === 'all' ? '' : `&status=${contentFilter}`;
-      const content = await api('GET', `/content?pageSize=50${filter}`);
-      const tbody = document.getElementById('content-list');
-      tbody.innerHTML = content.items?.map(item => `
+      const result = await api('GET', '/content?pageSize=50');
+      document.getElementById('stat-pending').textContent =
+        (result.stats?.byStatus?.draft || 0) + (result.stats?.byStatus?.reviewing || 0);
+
+      const html = result.items?.map(item => `
         <tr>
           <td>${escapeHtml(item.title)}</td>
           <td>${item.contentType}</td>
-          <td>${item.platforms.join(', ')}</td>
           <td><span class="badge badge-${item.status}">${statusLabel(item.status)}</span></td>
           <td>${formatDate(item.createdAt)}</td>
-          <td class="actions">
+          <td>
             <button class="action-btn" onclick="viewContent('${item.id}')" title="查看">👁</button>
             <button class="action-btn" onclick="approveContent('${item.id}')" title="通过">✓</button>
             <button class="action-btn" onclick="deleteContent('${item.id}')" title="删除">🗑</button>
           </td>
         </tr>
-      `).join('') || '<tr><td colspan="6" class="empty-state">暂无内容</td></tr>';
-    }
-
-    // Tasks
-    async function loadTasks() {
-      const tasks = await api('GET', '/tasks');
-      const tbody = document.getElementById('tasks-list');
-      tbody.innerHTML = tasks?.map(task => `
-        <tr>
-          <td>${escapeHtml(task.name)}</td>
-          <td>${task.contentType}</td>
-          <td>${task.platforms.join(', ')}</td>
-          <td><span class="badge badge-${task.enabled ? 'approved' : 'draft'}">${task.enabled ? '启用' : '禁用'}</span></td>
-          <td class="actions">
-            <button class="action-btn" onclick="triggerTask('${task.id}')" title="立即执行">▶</button>
-            <button class="action-btn" onclick="editTask('${task.id}')" title="编辑">✏</button>
-            <button class="action-btn" onclick="deleteTask('${task.id}')" title="删除">🗑</button>
-          </td>
-        </tr>
-      `).join('') || '<tr><td colspan="5" class="empty-state">暂无任务</td></tr>';
-    }
-
-    // Schedules
-    async function loadSchedules() {
-      const schedules = await api('GET', '/schedules');
-      const tasks = await api('GET', '/tasks');
-      const taskMap = Object.fromEntries(tasks.map(t => [t.id, t.name]));
-
-      const tbody = document.getElementById('schedules-list');
-      tbody.innerHTML = schedules?.map(s => `
-        <tr>
-          <td>${escapeHtml(s.name)}</td>
-          <td>${taskMap[s.taskId] || s.taskId}</td>
-          <td>${frequencyLabel(s.frequency)}</td>
-          <td>${s.nextRunAt ? formatDate(s.nextRunAt) : '-'}</td>
-          <td><span class="badge badge-${s.active ? 'approved' : 'draft'}">${s.active ? '启用' : '禁用'}</span></td>
-          <td class="actions">
-            <button class="action-btn" onclick="toggleSchedule('${s.id}', ${!s.active})" title="切换状态">⏯</button>
-            <button class="action-btn" onclick="deleteSchedule('${s.id}')" title="删除">🗑</button>
-          </td>
-        </tr>
-      `).join('') || '<tr><td colspan="6" class="empty-state">暂无调度</td></tr>';
-    }
-
-    // History
-    async function loadHistory() {
-      const executions = await api('GET', '/executions?limit=50');
-      const tbody = document.getElementById('history-list');
-      tbody.innerHTML = executions?.map(e => `
-        <tr>
-          <td>${e.taskId.slice(0, 8)}...</td>
-          <td><span class="badge badge-${e.status === 'completed' ? 'approved' : e.status === 'failed' ? 'rejected' : 'reviewing'}">${e.status}</span></td>
-          <td>${formatDate(e.startedAt)}</td>
-          <td>${e.completedAt ? ((e.completedAt - e.startedAt) / 1000).toFixed(1) + 's' : '-'}</td>
-        </tr>
-      `).join('') || '<tr><td colspan="4" class="empty-state">暂无执行记录</td></tr>';
+      `).join('') || '<tr><td colspan="5" class="empty-state">暂无内容</td></tr>';
+      document.getElementById('content-list').innerHTML = html;
     }
 
     // Actions
+    async function startWorkers() {
+      await api('POST', '/workers/start');
+      refresh();
+    }
+
+    async function pauseWorkers() {
+      await api('POST', '/workers/pause');
+      refresh();
+    }
+
+    async function stopWorkers() {
+      await api('POST', '/workers/stop');
+      refresh();
+    }
+
+    async function removeTopic(id) {
+      await api('DELETE', `/workers/queue/${id}`);
+      loadTopics();
+    }
+
+    async function clearQueue() {
+      if (confirm('确定清空队列？')) {
+        await api('DELETE', '/workers/queue');
+        loadTopics();
+      }
+    }
+
+    async function saveConfig() {
+      await api('PUT', '/workers/config', {
+        workerCount: parseInt(document.getElementById('config-workers').value),
+        minQueueSize: parseInt(document.getElementById('config-queue-size').value),
+        taskDelay: parseInt(document.getElementById('config-delay').value),
+        defaultLanguage: document.getElementById('config-language').value,
+      });
+      alert('配置已保存');
+      refresh();
+    }
+
     async function viewContent(id) {
       const content = await api('GET', `/content/${id}`);
       showModal('内容详情', `
@@ -836,7 +684,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">内容</label>
-          <div style="white-space: pre-wrap; max-height: 400px; overflow-y: auto;">${escapeHtml(content.body)}</div>
+          <div style="white-space: pre-wrap; max-height: 400px; overflow-y: auto; background: var(--gray-50); padding: 12px; border-radius: 6px;">${escapeHtml(content.body)}</div>
         </div>
       `, `
         <button class="btn btn-outline" onclick="closeModal()">关闭</button>
@@ -846,52 +694,47 @@
 
     async function approveContent(id) {
       await api('PUT', `/content/${id}/status`, { status: 'approved' });
-      refreshPage();
+      loadContent();
     }
 
     async function deleteContent(id) {
-      if (confirm('确定删除此内容?')) {
+      if (confirm('确定删除？')) {
         await api('DELETE', `/content/${id}`);
-        refreshPage();
+        loadContent();
       }
     }
 
-    async function triggerTask(id) {
-      await api('POST', `/tasks/${id}/trigger`);
-      alert('任务已触发');
-      refreshPage();
+    function showAddTopicModal() {
+      showModal('添加主题', `
+        <div class="form-group">
+          <label class="form-label">主题内容</label>
+          <textarea class="form-textarea" id="new-topic" placeholder="输入主题，每行一个可批量添加"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">内容类型</label>
+          <select class="form-select" id="new-topic-type">
+            <option value="article">文章</option>
+            <option value="blog">博客</option>
+            <option value="social">社交媒体</option>
+          </select>
+        </div>
+      `, `
+        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="addTopics()">添加</button>
+      `);
     }
 
-    async function deleteTask(id) {
-      if (confirm('确定删除此任务?')) {
-        await api('DELETE', `/tasks/${id}`);
-        refreshPage();
-      }
+    async function addTopics() {
+      const text = document.getElementById('new-topic').value;
+      const topics = text.split('\n').map(t => t.trim()).filter(Boolean);
+      if (topics.length === 0) return;
+
+      await api('POST', '/workers/queue/bulk', { topics });
+      closeModal();
+      loadTopics();
     }
 
-    async function toggleSchedule(id, active) {
-      await api('PUT', `/schedules/${id}`, { active });
-      refreshPage();
-    }
-
-    async function deleteSchedule(id) {
-      if (confirm('确定删除此调度?')) {
-        await api('DELETE', `/schedules/${id}`);
-        refreshPage();
-      }
-    }
-
-    async function startScheduler() {
-      await api('POST', '/scheduler/start');
-      refreshPage();
-    }
-
-    async function stopScheduler() {
-      await api('POST', '/scheduler/stop');
-      refreshPage();
-    }
-
-    // Modals
+    // Modal
     function showModal(title, body, footer) {
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-body').innerHTML = body;
@@ -903,131 +746,6 @@
       document.getElementById('modal-container').classList.add('hidden');
     }
 
-    function showNewTaskModal() {
-      showModal('新建任务', `
-        <div class="form-group">
-          <label class="form-label">任务名称</label>
-          <input type="text" class="form-input" id="task-name" placeholder="如: 每日科技资讯">
-        </div>
-        <div class="form-group">
-          <label class="form-label">内容类型</label>
-          <select class="form-select" id="task-type">
-            <option value="article">文章</option>
-            <option value="blog">博客</option>
-            <option value="social">社交媒体</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">主题模板</label>
-          <textarea class="form-textarea" id="task-topic" placeholder="如: 今日科技热点新闻汇总"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">目标平台 (逗号分隔)</label>
-          <input type="text" class="form-input" id="task-platforms" placeholder="微信公众号, 小红书">
-        </div>
-      `, `
-        <button class="btn btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn btn-primary" onclick="createTask()">创建</button>
-      `);
-    }
-
-    async function createTask() {
-      const task = {
-        name: document.getElementById('task-name').value,
-        contentType: document.getElementById('task-type').value,
-        topicTemplate: document.getElementById('task-topic').value,
-        platforms: document.getElementById('task-platforms').value.split(',').map(p => p.trim()).filter(Boolean),
-        enabled: true,
-      };
-      await api('POST', '/tasks', task);
-      closeModal();
-      refreshPage();
-    }
-
-    function showNewContentModal() {
-      showModal('新建内容', `
-        <div class="form-group">
-          <label class="form-label">标题</label>
-          <input type="text" class="form-input" id="content-title">
-        </div>
-        <div class="form-group">
-          <label class="form-label">内容类型</label>
-          <select class="form-select" id="content-type">
-            <option value="article">文章</option>
-            <option value="blog">博客</option>
-            <option value="social">社交媒体</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">内容</label>
-          <textarea class="form-textarea" id="content-body" rows="10"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">目标平台 (逗号分隔)</label>
-          <input type="text" class="form-input" id="content-platforms" placeholder="微信公众号, 小红书">
-        </div>
-      `, `
-        <button class="btn btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn btn-primary" onclick="createContent()">保存</button>
-      `);
-    }
-
-    async function createContent() {
-      const content = {
-        title: document.getElementById('content-title').value,
-        contentType: document.getElementById('content-type').value,
-        body: document.getElementById('content-body').value,
-        platforms: document.getElementById('content-platforms').value.split(',').map(p => p.trim()).filter(Boolean),
-      };
-      await api('POST', '/content', content);
-      closeModal();
-      refreshPage();
-    }
-
-    function showNewScheduleModal() {
-      api('GET', '/tasks').then(tasks => {
-        const taskOptions = tasks.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
-        showModal('新建调度', `
-          <div class="form-group">
-            <label class="form-label">调度名称</label>
-            <input type="text" class="form-input" id="schedule-name">
-          </div>
-          <div class="form-group">
-            <label class="form-label">关联任务</label>
-            <select class="form-select" id="schedule-task">${taskOptions}</select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">频率</label>
-            <select class="form-select" id="schedule-frequency">
-              <option value="daily">每天</option>
-              <option value="weekly">每周</option>
-              <option value="hourly">每小时</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">执行时间</label>
-            <input type="time" class="form-input" id="schedule-time" value="09:00">
-          </div>
-        `, `
-          <button class="btn btn-outline" onclick="closeModal()">取消</button>
-          <button class="btn btn-primary" onclick="createSchedule()">创建</button>
-        `);
-      });
-    }
-
-    async function createSchedule() {
-      const schedule = {
-        name: document.getElementById('schedule-name').value,
-        taskId: document.getElementById('schedule-task').value,
-        frequency: document.getElementById('schedule-frequency').value,
-        timeOfDay: document.getElementById('schedule-time').value,
-        active: true,
-      };
-      await api('POST', '/schedules', schedule);
-      closeModal();
-      refreshPage();
-    }
-
     // Helpers
     function escapeHtml(str) {
       if (!str) return '';
@@ -1035,39 +753,20 @@
     }
 
     function formatDate(ts) {
-      if (!ts) return '-';
-      return new Date(ts).toLocaleString('zh-CN');
+      return ts ? new Date(ts).toLocaleString('zh-CN') : '-';
+    }
+
+    function stateLabel(state) {
+      return { idle: '空闲', working: '工作中', paused: '已暂停', error: '错误' }[state] || state;
     }
 
     function statusLabel(status) {
-      const labels = {
-        draft: '草稿',
-        reviewing: '审核中',
-        approved: '已通过',
-        rejected: '已拒绝',
-        scheduled: '待发布',
-        published: '已发布',
-        archived: '已归档',
-      };
-      return labels[status] || status;
-    }
-
-    function frequencyLabel(freq) {
-      const labels = {
-        hourly: '每小时',
-        daily: '每天',
-        weekly: '每周',
-        monthly: '每月',
-        custom: '自定义',
-      };
-      return labels[freq] || freq;
+      return { draft: '草稿', reviewing: '审核中', approved: '已通过', rejected: '已拒绝', scheduled: '待发布', published: '已发布' }[status] || status;
     }
 
     // Initial load
-    loadDashboard();
-
-    // Auto refresh
-    setInterval(refreshPage, 30000);
+    refresh();
+    refreshInterval = setInterval(refresh, 3000);
   </script>
 </body>
 </html>
