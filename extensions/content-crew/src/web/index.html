@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Crew - 24/7 自媒体内容自动化系统</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    .app { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--gray-900);
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--gray-700);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header h1 { font-size: 1.25rem; font-weight: 600; }
+    .sidebar-header p { font-size: 0.75rem; color: var(--gray-300); margin-top: 4px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--gray-300);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--gray-800);
+      color: white;
+    }
+
+    .nav-item.active { border-left: 3px solid var(--primary); }
+    .nav-item svg { width: 20px; height: 20px; margin-right: 12px; }
+
+    .main { flex: 1; margin-left: 240px; padding: 24px; }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .page-title { font-size: 1.5rem; font-weight: 600; }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title { font-size: 1rem; font-weight: 600; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .stat-label { font-size: 0.75rem; color: var(--gray-600); margin-bottom: 4px; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--gray-900); }
+    .stat-value.success { color: var(--success); }
+    .stat-value.warning { color: var(--warning); }
+    .stat-value.danger { color: var(--danger); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      gap: 6px;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--gray-300); color: var(--gray-700); }
+    .btn-outline:hover { background: var(--gray-100); }
+    .btn-lg { padding: 12px 24px; font-size: 1rem; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--gray-200); }
+    th { font-weight: 600; color: var(--gray-600); font-size: 0.75rem; text-transform: uppercase; }
+    tr:hover { background: var(--gray-50); }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-draft { background: var(--gray-200); color: var(--gray-700); }
+    .badge-reviewing { background: #fef3c7; color: #92400e; }
+    .badge-approved { background: #d1fae5; color: #065f46; }
+    .badge-rejected { background: #fee2e2; color: #991b1b; }
+    .badge-idle { background: var(--gray-200); color: var(--gray-700); }
+    .badge-working { background: #dbeafe; color: #1e40af; }
+    .badge-paused { background: #fef3c7; color: #92400e; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; color: var(--gray-700); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .form-textarea { min-height: 100px; resize: vertical; }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title { font-size: 1.125rem; font-weight: 600; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 16px 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; }
+
+    .hidden { display: none !important; }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .status-indicator.running { background: #d1fae5; color: #065f46; }
+    .status-indicator.stopped { background: var(--gray-200); color: var(--gray-700); }
+    .status-indicator.paused { background: #fef3c7; color: #92400e; }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.running { background: var(--success); }
+    .status-dot.stopped { background: var(--gray-400); animation: none; }
+    .status-dot.paused { background: var(--warning); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
+    }
+
+    .worker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .worker-card {
+      background: var(--gray-50);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .worker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .worker-name { font-weight: 600; }
+    .worker-stats { font-size: 0.75rem; color: var(--gray-600); margin-top: 8px; }
+    .worker-current { font-size: 0.875rem; color: var(--gray-700); margin-top: 8px; padding: 8px; background: white; border-radius: 4px; }
+
+    .topic-list { max-height: 400px; overflow-y: auto; }
+    .topic-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .topic-item:hover { background: var(--gray-50); }
+    .topic-text { flex: 1; }
+    .topic-meta { font-size: 0.75rem; color: var(--gray-600); margin-top: 4px; }
+
+    .action-btn {
+      padding: 6px 10px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      color: var(--gray-600);
+      font-size: 1rem;
+    }
+    .action-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+
+    .control-panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-600);
+    }
+
+    .uptime { font-size: 0.875rem; color: var(--gray-600); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>Content Crew</h1>
+        <p>24/7 自媒体自动化系统</p>
+      </div>
+      <nav>
+        <a class="nav-item active" data-page="dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          控制台
+        </a>
+        <a class="nav-item" data-page="workers">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+          工作进程
+        </a>
+        <a class="nav-item" data-page="topics">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          主题队列
+        </a>
+        <a class="nav-item" data-page="content">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          内容管理
+        </a>
+        <a class="nav-item" data-page="settings">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          系统设置
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Dashboard Page -->
+      <div id="page-dashboard" class="page">
+        <div class="page-header">
+          <h2 class="page-title">控制台</h2>
+          <div class="status-indicator" id="system-status">
+            <span class="status-dot"></span>
+            <span id="status-text">加载中...</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">系统控制</h3>
+            <span class="uptime" id="uptime-display"></span>
+          </div>
+          <div class="control-panel">
+            <button class="btn btn-success btn-lg" id="btn-start" onclick="startWorkers()">
+              ▶ 启动系统
+            </button>
+            <button class="btn btn-warning btn-lg" id="btn-pause" onclick="pauseWorkers()">
+              ⏸ 暂停系统
+            </button>
+            <button class="btn btn-danger btn-lg" id="btn-stop" onclick="stopWorkers()">
+              ⏹ 停止系统
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">运行中的进程</div>
+            <div class="stat-value success" id="stat-workers">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">队列中的主题</div>
+            <div class="stat-value" id="stat-queue">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">已完成内容</div>
+            <div class="stat-value success" id="stat-completed">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">待审核内容</div>
+            <div class="stat-value warning" id="stat-pending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">错误次数</div>
+            <div class="stat-value danger" id="stat-errors">0</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">工作进程状态</h3>
+          </div>
+          <div class="worker-grid" id="worker-list"></div>
+        </div>
+      </div>
+
+      <!-- Workers Page -->
+      <div id="page-workers" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">工作进程</h2>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">所有工作进程</h3>
+          </div>
+          <div class="worker-grid" id="workers-detail"></div>
+        </div>
+      </div>
+
+      <!-- Topics Page -->
+      <div id="page-topics" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">主题队列</h2>
+          <button class="btn btn-primary" onclick="showAddTopicModal()">+ 添加主题</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">待处理主题</h3>
+            <button class="btn btn-outline" onclick="clearQueue()">清空队列</button>
+          </div>
+          <div class="topic-list" id="topic-list"></div>
+        </div>
+      </div>
+
+      <!-- Content Page -->
+      <div id="page-content" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">内容管理</h2>
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>标题</th>
+                  <th>类型</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="content-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Page -->
+      <div id="page-settings" class="page hidden">
+        <div class="page-header">
+          <h2 class="page-title">系统设置</h2>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">工作进程配置</h3>
+          <div style="margin-top: 16px;">
+            <div class="form-group">
+              <label class="form-label">工作进程数量</label>
+              <input type="number" class="form-input" id="config-workers" min="1" max="10" value="2">
+            </div>
+            <div class="form-group">
+              <label class="form-label">最小队列长度（自动补充）</label>
+              <input type="number" class="form-input" id="config-queue-size" min="5" max="100" value="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">任务间隔（毫秒）</label>
+              <input type="number" class="form-input" id="config-delay" min="1000" max="60000" value="5000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">默认语言</label>
+              <select class="form-select" id="config-language">
+                <option value="Chinese">中文</option>
+                <option value="English">英文</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-container" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">标题</h3>
+        <button class="action-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    let currentPage = 'dashboard';
+    let refreshInterval = null;
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => showPage(item.dataset.page));
+    });
+
+    function showPage(page) {
+      currentPage = page;
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`page-${page}`).classList.remove('hidden');
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.page === page);
+      });
+      refresh();
+    }
+
+    // API
+    async function api(method, path, data) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (data) opts.body = JSON.stringify(data);
+      const res = await fetch(API + path, opts);
+      return res.json();
+    }
+
+    // Refresh data
+    async function refresh() {
+      const status = await api('GET', '/workers/status');
+      updateDashboard(status);
+
+      if (currentPage === 'topics') {
+        loadTopics();
+      } else if (currentPage === 'content') {
+        loadContent();
+      }
+    }
+
+    function updateDashboard(status) {
+      // System status
+      const statusEl = document.getElementById('system-status');
+      const statusText = document.getElementById('status-text');
+      const dot = statusEl.querySelector('.status-dot');
+
+      if (status.isRunning) {
+        statusEl.className = 'status-indicator running';
+        dot.className = 'status-dot running';
+        statusText.textContent = '系统运行中';
+      } else {
+        statusEl.className = 'status-indicator stopped';
+        dot.className = 'status-dot stopped';
+        statusText.textContent = '系统已停止';
+      }
+
+      // Uptime
+      if (status.uptime > 0) {
+        const h = Math.floor(status.uptime / 3600);
+        const m = Math.floor((status.uptime % 3600) / 60);
+        const s = status.uptime % 60;
+        document.getElementById('uptime-display').textContent = `运行时间: ${h}小时${m}分${s}秒`;
+      } else {
+        document.getElementById('uptime-display').textContent = '';
+      }
+
+      // Stats
+      const workingCount = status.workers.filter(w => w.state === 'working').length;
+      document.getElementById('stat-workers').textContent = `${workingCount}/${status.workers.length}`;
+      document.getElementById('stat-queue').textContent = status.queueSize;
+      document.getElementById('stat-completed').textContent = status.completedCount;
+      document.getElementById('stat-errors').textContent = status.errorCount;
+
+      // Workers
+      const workerHtml = status.workers.map(w => `
+        <div class="worker-card">
+          <div class="worker-header">
+            <span class="worker-name">${w.name}</span>
+            <span class="badge badge-${w.state}">${stateLabel(w.state)}</span>
+          </div>
+          ${w.currentTopic ? `<div class="worker-current">正在处理: ${escapeHtml(w.currentTopic.topic.slice(0, 50))}...</div>` : ''}
+          <div class="worker-stats">完成: ${w.completedTasks} | 错误: ${w.errors}</div>
+        </div>
+      `).join('');
+      document.getElementById('worker-list').innerHTML = workerHtml;
+      document.getElementById('workers-detail').innerHTML = workerHtml;
+
+      // Update config form
+      document.getElementById('config-workers').value = status.config.workerCount;
+      document.getElementById('config-queue-size').value = status.config.minQueueSize;
+      document.getElementById('config-delay').value = status.config.taskDelay;
+      document.getElementById('config-language').value = status.config.defaultLanguage;
+    }
+
+    async function loadTopics() {
+      const topics = await api('GET', '/workers/queue');
+      const html = topics.length ? topics.map(t => `
+        <div class="topic-item">
+          <div class="topic-text">
+            <div>${escapeHtml(t.topic)}</div>
+            <div class="topic-meta">${t.contentType} | ${t.source} | 优先级: ${t.priority}</div>
+          </div>
+          <button class="action-btn" onclick="removeTopic('${t.id}')" title="删除">🗑</button>
+        </div>
+      `).join('') : '<div class="empty-state">队列为空，系统将自动生成主题</div>';
+      document.getElementById('topic-list').innerHTML = html;
+    }
+
+    async function loadContent() {
+      const result = await api('GET', '/content?pageSize=50');
+      document.getElementById('stat-pending').textContent =
+        (result.stats?.byStatus?.draft || 0) + (result.stats?.byStatus?.reviewing || 0);
+
+      const html = result.items?.map(item => `
+        <tr>
+          <td>${escapeHtml(item.title)}</td>
+          <td>${item.contentType}</td>
+          <td><span class="badge badge-${item.status}">${statusLabel(item.status)}</span></td>
+          <td>${formatDate(item.createdAt)}</td>
+          <td>
+            <button class="action-btn" onclick="viewContent('${item.id}')" title="查看">👁</button>
+            <button class="action-btn" onclick="approveContent('${item.id}')" title="通过">✓</button>
+            <button class="action-btn" onclick="deleteContent('${item.id}')" title="删除">🗑</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="empty-state">暂无内容</td></tr>';
+      document.getElementById('content-list').innerHTML = html;
+    }
+
+    // Actions
+    async function startWorkers() {
+      await api('POST', '/workers/start');
+      refresh();
+    }
+
+    async function pauseWorkers() {
+      await api('POST', '/workers/pause');
+      refresh();
+    }
+
+    async function stopWorkers() {
+      await api('POST', '/workers/stop');
+      refresh();
+    }
+
+    async function removeTopic(id) {
+      await api('DELETE', `/workers/queue/${id}`);
+      loadTopics();
+    }
+
+    async function clearQueue() {
+      if (confirm('确定清空队列？')) {
+        await api('DELETE', '/workers/queue');
+        loadTopics();
+      }
+    }
+
+    async function saveConfig() {
+      await api('PUT', '/workers/config', {
+        workerCount: parseInt(document.getElementById('config-workers').value),
+        minQueueSize: parseInt(document.getElementById('config-queue-size').value),
+        taskDelay: parseInt(document.getElementById('config-delay').value),
+        defaultLanguage: document.getElementById('config-language').value,
+      });
+      alert('配置已保存');
+      refresh();
+    }
+
+    async function viewContent(id) {
+      const content = await api('GET', `/content/${id}`);
+      showModal('内容详情', `
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <div>${escapeHtml(content.title)}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">内容</label>
+          <div style="white-space: pre-wrap; max-height: 400px; overflow-y: auto; background: var(--gray-50); padding: 12px; border-radius: 6px;">${escapeHtml(content.body)}</div>
+        </div>
+      `, `
+        <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+        <button class="btn btn-success" onclick="approveContent('${id}'); closeModal();">通过审核</button>
+      `);
+    }
+
+    async function approveContent(id) {
+      await api('PUT', `/content/${id}/status`, { status: 'approved' });
+      loadContent();
+    }
+
+    async function deleteContent(id) {
+      if (confirm('确定删除？')) {
+        await api('DELETE', `/content/${id}`);
+        loadContent();
+      }
+    }
+
+    function showAddTopicModal() {
+      showModal('添加主题', `
+        <div class="form-group">
+          <label class="form-label">主题内容</label>
+          <textarea class="form-textarea" id="new-topic" placeholder="输入主题，每行一个可批量添加"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">内容类型</label>
+          <select class="form-select" id="new-topic-type">
+            <option value="article">文章</option>
+            <option value="blog">博客</option>
+            <option value="social">社交媒体</option>
+          </select>
+        </div>
+      `, `
+        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="addTopics()">添加</button>
+      `);
+    }
+
+    async function addTopics() {
+      const text = document.getElementById('new-topic').value;
+      const topics = text.split('\n').map(t => t.trim()).filter(Boolean);
+      if (topics.length === 0) return;
+
+      await api('POST', '/workers/queue/bulk', { topics });
+      closeModal();
+      loadTopics();
+    }
+
+    // Modal
+    function showModal(title, body, footer) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = body;
+      document.getElementById('modal-footer').innerHTML = footer;
+      document.getElementById('modal-container').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-container').classList.add('hidden');
+    }
+
+    // Helpers
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function formatDate(ts) {
+      return ts ? new Date(ts).toLocaleString('zh-CN') : '-';
+    }
+
+    function stateLabel(state) {
+      return { idle: '空闲', working: '工作中', paused: '已暂停', error: '错误' }[state] || state;
+    }
+
+    function statusLabel(status) {
+      return { draft: '草稿', reviewing: '审核中', approved: '已通过', rejected: '已拒绝', scheduled: '待发布', published: '已发布' }[status] || status;
+    }
+
+    // Initial load
+    refresh();
+    refreshInterval = setInterval(refresh, 3000);
+  </script>
+</body>
+</html>

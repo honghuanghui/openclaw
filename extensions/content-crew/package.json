@@ -1,0 +1,14 @@
+{
+  "name": "@openclaw/content-crew",
+  "version": "0.1.0",
+  "description": "Multi-agent collaborative content creation system for OpenClaw",
+  "type": "module",
+  "devDependencies": {
+    "openclaw": "workspace:*"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

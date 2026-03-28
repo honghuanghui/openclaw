@@ -236,6 +236,12 @@ importers:
         specifier: workspace:*
         version: link:../..
 
+  extensions/content-crew:
+    devDependencies:
+      openclaw:
+        specifier: workspace:*
+        version: link:../..
+
   extensions/copilot-proxy:
     devDependencies:
       openclaw:

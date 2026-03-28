@@ -1,0 +1,56 @@
+{
+  "id": "content-crew",
+  "name": "Content Crew",
+  "description": "Multi-agent collaborative content creation system with 24/7 automated scheduling, content queue management, and Web UI dashboard.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "defaultModel": {
+        "type": "string",
+        "description": "Default model for all agent roles"
+      },
+      "roles": {
+        "type": "object",
+        "description": "Per-role model overrides",
+        "properties": {
+          "planner": { "type": "string" },
+          "writer": { "type": "string" },
+          "editor": { "type": "string" },
+          "reviewer": { "type": "string" },
+          "polisher": { "type": "string" }
+        }
+      },
+      "maxConcurrentAgents": {
+        "type": "number",
+        "description": "Maximum concurrent sub-agents (default: 3)"
+      },
+      "timeoutSeconds": {
+        "type": "number",
+        "description": "Per-agent timeout in seconds (default: 300)"
+      },
+      "dataDir": {
+        "type": "string",
+        "description": "Data directory for content and scheduler persistence"
+      },
+      "server": {
+        "type": "object",
+        "description": "Web UI server configuration",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable Web UI server (default: true)"
+          },
+          "port": {
+            "type": "number",
+            "description": "Server port (default: 3847)"
+          },
+          "host": {
+            "type": "string",
+            "description": "Server host (default: 127.0.0.1)"
+          }
+        }
+      }
+    }
+  }
+}
